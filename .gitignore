@@ -3,4 +3,6 @@
 ################################################################################
 
 /ApiCambioMoneda/obj
+bin/
+/ApiCambioMoneda/bin/netcoreapp3.1/
 /.vs/ApiCambioMoneda/v16
