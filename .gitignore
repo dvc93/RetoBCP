@@ -7,3 +7,5 @@ bin/
 /ApiCambioMoneda/bin/netcoreapp3.1/
 /.vs/ApiCambioMoneda/v16
 /Domain/obj
+/Repository/obj
+/Service/obj

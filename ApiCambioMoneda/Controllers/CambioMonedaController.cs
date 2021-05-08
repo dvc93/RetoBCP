@@ -8,37 +8,38 @@ using System.Threading.Tasks;
 
 namespace ApiCambioMoneda.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("v1/[controller]/[action]")]
     [ApiController]
-    public class WeatherForecastController : ControllerBase
+    public class CambioMonedaController : ControllerBase
     {
-        // GET: api/<WeatherForecastController>
+        // GET: api/<CambioMonedaController>
         [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<WeatherForecastController>/5
+        // GET api/<CambioMonedaController>/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<WeatherForecastController>
-        [HttpPost]
+        // POST api/<CambioMonedaController>
+        [HttpPost, MapToApiVersion("1.0")]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<WeatherForecastController>/5
+        // PUT api/<CambioMonedaController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<WeatherForecastController>/5
+        // DELETE api/<CambioMonedaController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
