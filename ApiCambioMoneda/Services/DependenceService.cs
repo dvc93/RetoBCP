@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Repository;
+using Repository.Interface;
+using Service;
+using Service.Interface;
 
 namespace ApiCambioMoneda.Services
 {
@@ -10,16 +10,16 @@ namespace ApiCambioMoneda.Services
     {
         public static IServiceCollection AddInjectionDependency(this IServiceCollection services)
         {
-            #region business
-            // services.AddScoped<IReturnBusiness, ReturnBusiness>();
+            #region repository
+            services.AddScoped<ICambioMonedaRepository, CambioMonedaRepository>();
             #endregion
 
             #region services
-            // services.AddScoped<IReturnServices, ReturnServices>();
+             services.AddScoped<ICambioMonedaService, CambioMonedaService>();
             #endregion
 
             #region logging
-            // services.AddScoped<ICorrelationId, CorrelationId>();
+            
             #endregion
 
             return services;

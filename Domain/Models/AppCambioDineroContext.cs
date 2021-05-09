@@ -17,15 +17,15 @@ namespace Domain.Models
         {
         }
 
-        public virtual DbSet<Monedum> Moneda { get; set; }
-        public virtual DbSet<TipoCambioMonedum> TipoCambioMoneda { get; set; }
+        public virtual DbSet<Moneda> Moneda { get; set; }
+        public virtual DbSet<TipoCambioMoneda> TipoCambioMoneda { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("data source=DESKTOP-JV8KDIM;initial catalog=AppCambioDinero;user id=sa;password=123456");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-JV8KDIM;Database=AppCambioDinero;User ID=sa;Password=123456;");
             }
         }
 
@@ -33,7 +33,7 @@ namespace Domain.Models
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Modern_Spanish_CI_AS");
 
-            modelBuilder.Entity<Monedum>(entity =>
+            modelBuilder.Entity<Moneda>(entity =>
             {
                 entity.HasKey(e => e.CodigoMoneda)
                     .HasName("PK_MONEDA");
@@ -53,7 +53,7 @@ namespace Domain.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<TipoCambioMonedum>(entity =>
+            modelBuilder.Entity<TipoCambioMoneda>(entity =>
             {
                 entity.HasKey(e => new { e.MonedaOrigen, e.MonedaDestino })
                     .HasName("PK_TIPOCAMBIO");

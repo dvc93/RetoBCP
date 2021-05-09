@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Domain.Models
 {
-    public partial class TipoCambioMonedum
+    public partial class TipoCambioMoneda
     {
         public int IdTipoCambio { get; set; }
         public string MonedaOrigen { get; set; }
@@ -15,7 +15,7 @@ namespace Domain.Models
         public DateTime? AuditoriaFechaCreacion { get; set; }
         public DateTime? AuditoriaFechaModificacion { get; set; }
 
-        public virtual Monedum MonedaDestinoNavigation { get; set; }
-        public virtual Monedum MonedaOrigenNavigation { get; set; }
+        public virtual Moneda MonedaDestinoNavigation { get; set; }
+        public virtual Moneda MonedaOrigenNavigation { get; set; }
     }
 }

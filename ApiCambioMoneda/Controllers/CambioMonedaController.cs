@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiCambioMoneda.Services.Dto;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,6 +17,12 @@ namespace ApiCambioMoneda.Controllers
     [ApiController]
     public class CambioMonedaController : ControllerBase
     {
+        private readonly ICambioMonedaService _cambioMonedaService;
+
+        public CambioMonedaController (ICambioMonedaService cambioMonedaService)
+        {
+            _cambioMonedaService = cambioMonedaService;
+        }
         // GET: api/<CambioMonedaController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -29,8 +39,19 @@ namespace ApiCambioMoneda.Controllers
 
         // POST api/<CambioMonedaController>
         [HttpPost, MapToApiVersion("1.0")]
-        public void Post([FromBody] string value)
+        [SwaggerResponse(200, "With information", typeof(string))]
+        public async Task<IActionResult> GuardarTipoCambio([FromBody, BindRequired] RequestMoneda requests)
         {
+            try
+            {
+                var data = await _cambioMonedaService.GuardarTipoCambio(requests);
+
+                return StatusCode(200, data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest (ex.Message);
+            }
         }
 
         // PUT api/<CambioMonedaController>/5
