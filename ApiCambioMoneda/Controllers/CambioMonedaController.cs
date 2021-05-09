@@ -4,9 +4,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Service.Dto;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
+
+using System.Net;
+using Service.Dto.Response;
+using CambioMoneda.API.Helpers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,10 +29,7 @@ namespace ApiCambioMoneda.Controllers
         }
         // GET: api/<CambioMonedaController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        
 
         // GET api/<CambioMonedaController>/5
         [HttpGet("{id}")]
@@ -37,21 +38,36 @@ namespace ApiCambioMoneda.Controllers
             return "value";
         }
 
+        [HttpGet, MapToApiVersion("1.0")]
+        [SwaggerResponse(200, "With information", typeof(Response))]
+        public async Task<Response> RealizarCambioMoneda([FromQuery, BindRequired] decimal monto , [FromQuery, BindRequired] string monedaOrigen , [FromQuery, BindRequired]  string  monedaDestino)
+        {
+
+            var data = await _cambioMonedaService.RealizarCambioMoneda(monto,monedaOrigen, monedaDestino);
+
+            return new Response
+            {
+                Code = data.TipoCambio == -1 ? 500 : 200,
+                Data = data,
+                Status = data.TipoCambio == -1 ? Constantes.STATUS_FAIL : Constantes.STATUS_SUCCESS,
+                Message = data.TipoCambio == -1 ? Constantes.NOT_FOUND_TYPE_CHANGE : String.Empty
+            };
+
+
+        }
+
         // POST api/<CambioMonedaController>
         [HttpPost, MapToApiVersion("1.0")]
-        [SwaggerResponse(200, "With information", typeof(string))]
-        public async Task<IActionResult> GuardarTipoCambio([FromBody, BindRequired] RequestMoneda requests)
+        [SwaggerResponse(200, "With information", typeof(Response))]
+        public async Task<Response> GuardarTipoCambio([FromBody, BindRequired] RequestMoneda requests)
         {
-            try
-            {
+            
                 var data = await _cambioMonedaService.GuardarTipoCambio(requests);
 
-                return StatusCode(200, data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest (ex.Message);
-            }
+                return  new Response  { Code = data.ToString() == "OK" ? 200 : 500, Data = data,
+                Status = data.ToString() == "OK" ? Constantes.STATUS_SUCCESS : Constantes.STATUS_FAIL };
+            
+            
         }
 
         // PUT api/<CambioMonedaController>/5

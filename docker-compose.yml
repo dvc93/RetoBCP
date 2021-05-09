@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  apicambiomoneda:
+    image: ${DOCKER_REGISTRY-}apicambiomoneda
+    build:
+      context: .
+      dockerfile: ApiCambioMoneda\Dockerfile

@@ -1,4 +1,5 @@
 ﻿using ApiCambioMoneda.Services.Dto;
+using Service.Dto.Response;
 using System.Threading.Tasks;
 
 namespace Service.Interface
@@ -7,5 +8,7 @@ namespace Service.Interface
     {
 
         Task<string> GuardarTipoCambio(RequestMoneda request);
+        Task<ResponseTipoCambio> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino);
+        
     }
 }
