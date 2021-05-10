@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Options;
 
 #nullable disable
 
@@ -8,8 +9,11 @@ namespace Domain.Models
 {
     public partial class AppCambioDineroContext : DbContext
     {
-        public AppCambioDineroContext()
+
+        private readonly string _conexionDB; 
+        public AppCambioDineroContext(string conexionDB)
         {
+            _conexionDB = conexionDB;
         }
 
         public AppCambioDineroContext(DbContextOptions<AppCambioDineroContext> options)
@@ -19,13 +23,13 @@ namespace Domain.Models
 
         public virtual DbSet<Moneda> Moneda { get; set; }
         public virtual DbSet<TipoCambioMoneda> TipoCambioMoneda { get; set; }
+        public virtual DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=192.168.1.109;Database=AppCambioDinero;User ID=sa;Password=123456;");
+                optionsBuilder.UseSqlServer(_conexionDB);
             }
         }
 
@@ -78,9 +82,7 @@ namespace Domain.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.IdTipoCambio).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.TipoCambio).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.TipoCambio).HasColumnType("decimal(18, 3)");
 
                 entity.HasOne(d => d.MonedaDestinoNavigation)
                     .WithMany(p => p.TipoCambioMonedumMonedaDestinoNavigations)
@@ -93,6 +95,35 @@ namespace Domain.Models
                     .HasForeignKey(d => d.MonedaOrigen)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TIPOCAMBIOMONEDA_MONEDA_MonedaOrigen");
+            });
+
+            modelBuilder.Entity<Usuario>(entity =>
+            {
+                entity.HasKey(e => e.UserName)
+                    .HasName("PK__Usuario__C9F2845718D9D079");
+
+                entity.ToTable("Usuario", "GENERALES");
+
+                entity.Property(e => e.UserName)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Clave)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Correo)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nombres)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Token).IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -2,6 +2,7 @@ using ApiCambioMoneda.Services;
 using Domain.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +48,10 @@ namespace ApiCambioMoneda
             });
             services.AddApiVersions(Configuration);
             services.AddInjectionDependency();
+            var config = Configuration.GetSection("Config");
+            services.Configure<Config>(config);
             services.AddDbContext<AppCambioDineroContext>(o => o.UseSqlServer(mySettings.ConexionStringDB));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,6 +6,7 @@ using Service.Interface;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Service
 {
@@ -19,16 +20,25 @@ namespace Service
         }
         public async Task<string> GuardarTipoCambio(RequestMoneda request)
         {
-            var moneda = new TipoCambioMoneda
+            var moneda = await _cambioMonedaRepository.ObtenerIdTipoCambio(request.MonedaOrigen, request.MonedaDestino);
+            bool isModify = false;
+            if ( string.IsNullOrEmpty(moneda.MonedaDestino))
             {
-                AuditoriaFechaCreacion = DateTime.Now,
-                MonedaDestino = request.MonedaDestino,
-                MonedaOrigen = request.MonedaOrigen,
-                FlagActivo = request.FlagActivo,
-                TipoCambio = request.TipoCambio
+               
+                moneda.AuditoriaFechaCreacion = DateTime.Now;
+                moneda.MonedaDestino = request.MonedaDestino;
+                moneda.MonedaOrigen = request.MonedaOrigen;
+                moneda.FlagActivo = request.FlagActivo;
+            }
+            else
+            {
+                moneda.AuditoriaFechaModificacion = DateTime.Now;
+                isModify = true;
 
-            };
-            return await _cambioMonedaRepository.GuardarTipoCambio(moneda);
+            }
+            moneda.TipoCambio = request.TipoCambio;
+
+            return await _cambioMonedaRepository.GuardarTipoCambio(moneda, isModify);
         }
 
         public async Task<ResponseTipoCambio> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino)
@@ -51,6 +61,24 @@ namespace Service
             }
             return result;
 
+        }
+
+        public async Task<IEnumerable<ResponseMoneda>> ListaMonedas()
+        {
+            var listaMonedas = new List<ResponseMoneda>();
+            var monedas = await _cambioMonedaRepository.ListaMonedas();
+            monedas.ForEach(x =>
+            listaMonedas.Add( new ResponseMoneda { 
+                CodigoMoneda = x.CodigoMoneda,
+                AuditoriaFechaCreacion = x.AuditoriaFechaCreacion,
+                FlagActivo = x.FlagActivo,
+                NombreMoneda = x.NombreMoneda
+            
+            })
+
+            );
+
+            return listaMonedas;
         }
     }
 }

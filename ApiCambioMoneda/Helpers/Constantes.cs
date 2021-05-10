@@ -12,5 +12,6 @@ namespace CambioMoneda.API.Helpers
         public static readonly string STATUS_FAIL = "fail";
         public static readonly string STATUS_NOTFOUND = "notfound";
         public static readonly string NOT_FOUND_TYPE_CHANGE = "No se pudo encontrar el tipo de cambio de esta moneda.";
+        public static readonly string SAME_MONEY = "No se puede realizar el tipo de cambio entre el mismo tipo de moneda.";
     }
 }

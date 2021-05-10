@@ -1,0 +1,41 @@
+services:
+  apicambiomoneda:
+    build:
+      context: D:\RETOBCP\RetoBCP
+      dockerfile: ApiCambioMoneda\Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: CambioMoneda.API
+      target: base
+    container_name: CambioMoneda.API
+    entrypoint: C:\\remote_debugger\\x64\\msvsmon.exe /noauth /anyuser /silent /nostatus
+      /noclrwarn /nosecuritywarn /nofirewallwarn /nowowwarn /timeout:2147483646 /LogDebuggeeOutputToStdOut
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      ASPNETCORE_URLS: https://+:443;http://+:80
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: c:\.nuget\fallbackpackages;c:\.nuget\fallbackpackages2
+      NUGET_PACKAGES: C:\.nuget\packages
+    image: apicambiomoneda:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath c:\.nuget\packages
+        --additionalProbingPath c:\.nuget\fallbackpackages --additionalProbingPath
+        c:\.nuget\fallbackpackages2  "C:\app\bin\Debug\netcoreapp3.0\ApiCambioMoneda.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: C:\remote_debugger\x64\utils\KillProcess.exe
+        dotnet.exe
+      com.microsoft.visualstudio.debuggee.program: '"C:\Program Files\dotnet\dotnet.exe"'
+      com.microsoft.visualstudio.debuggee.workingdirectory: C:\app
+    ports:
+    - target: 80
+    - target: 443
+    volumes:
+    - C:\Users\drvc_\AppData\Roaming\ASP.NET\Https:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+    - C:\Users\drvc_\AppData\Roaming\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
+    - D:\RETOBCP\RetoBCP\ApiCambioMoneda:C:\app:rw
+    - C:\Users\drvc_\onecoremsvsmon\16.8.0713.0:C:\remote_debugger:ro
+    - D:\RETOBCP\RetoBCP:C:\src:rw
+    - C:\Microsoft\Xamarin\NuGet:c:\.nuget\fallbackpackages:ro
+    - C:\Program Files\dotnet\sdk\NuGetFallbackFolder:c:\.nuget\fallbackpackages2:ro
+    - C:\Users\drvc_\.nuget\packages:c:\.nuget\packages:ro
+version: '3.4'
