@@ -6,6 +6,8 @@ namespace Domain.Models
 {
     public class Config
     {
-       public  string  ConexionStringDB { get; set; } 
+       public  string  ConexionStringDB { get; set; }
+
+        public string SecretJWT { get; set; }
     }
 }
