@@ -11,7 +11,9 @@ namespace Repository.Interface
         Task<string> GuardarTipoCambio(TipoCambioMoneda moneda , bool isModify);
         Task<TipoCambioMoneda> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino);
         Task<List<Moneda>> ListaMonedas();
-        Task<TipoCambioMoneda> ObtenerIdTipoCambio(string monedaOrigen , string monedaDestino);
+        Task<TipoCambioMoneda> ObtenerIdTipoCambio(string monedaOrigen, string monedaDestino);
+        Task<bool> VerficarClientePreferencial(int idCliente);
+        Task<decimal> ObtenerTipoCambioPreferencial(string monedaOrigen, string monedaDestino);
 
     }
 }

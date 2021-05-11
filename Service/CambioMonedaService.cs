@@ -41,9 +41,11 @@ namespace Service
             return await _cambioMonedaRepository.GuardarTipoCambio(moneda, isModify);
         }
 
-        public async Task<ResponseTipoCambio> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino)
+        public async Task<ResponseTipoCambio> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino , int idCliente)
         {
             var monedas = await _cambioMonedaRepository.ListaMonedas();
+            var IsPref = await _cambioMonedaRepository.VerficarClientePreferencial(idCliente);
+            var tipoCambioPref = await _cambioMonedaRepository.ObtenerTipoCambioPreferencial(monedaOrigen, monedaDestino);
             var tipoCambio = await _cambioMonedaRepository.RealizarCambioMoneda(monto, monedaOrigen, monedaDestino);
             ResponseTipoCambio result = new ResponseTipoCambio
             {
@@ -57,8 +59,11 @@ namespace Service
             {
                 result.MonedaDestino = monedas.First(x => x.CodigoMoneda == result.CodigoMonedaDestino).NombreMoneda;
                 result.MonedaOrigen = monedas.First(x => x.CodigoMoneda == result.CodigoMonedaOrigen).NombreMoneda;
-                result.MontoConTipoCambio = (monto * result.TipoCambio);
+                var tipoCambioFinal = IsPref ? tipoCambioPref : result.TipoCambio;
+                result.MontoConTipoCambio = (   monto * tipoCambioFinal);
             }
+
+            result.TipoCambio = IsPref ? tipoCambioPref : result.TipoCambio;
             return result;
 
         }

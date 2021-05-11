@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Options;
 
 #nullable disable
 
@@ -9,11 +8,8 @@ namespace Domain.Models
 {
     public partial class AppCambioDineroContext : DbContext
     {
-
-        private readonly string _conexionDB; 
-        public AppCambioDineroContext(string conexionDB)
+        public AppCambioDineroContext()
         {
-            _conexionDB = conexionDB;
         }
 
         public AppCambioDineroContext(DbContextOptions<AppCambioDineroContext> options)
@@ -21,21 +17,46 @@ namespace Domain.Models
         {
         }
 
+        public virtual DbSet<Cliente> Clientes { get; set; }
         public virtual DbSet<Moneda> Moneda { get; set; }
         public virtual DbSet<TipoCambioMoneda> TipoCambioMoneda { get; set; }
+        public virtual DbSet<TipoCambioPreferencial> TipoCambioPreferencials { get; set; }
         public virtual DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_conexionDB);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("data source=DESKTOP-JV8KDIM;initial catalog=AppCambioDinero;user id=sa;password=123456");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Modern_Spanish_CI_AS");
+
+            modelBuilder.Entity<Cliente>(entity =>
+            {
+                entity.HasKey(e => e.IdCliente)
+                    .HasName("PK__Cliente__885457EE0E8C5ACD");
+
+                entity.ToTable("Cliente", "GENERALES");
+
+                entity.Property(e => e.IdCliente).HasColumnName("idCliente");
+
+                entity.Property(e => e.ClientePreferencial).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Documento)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nombres)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+            });
 
             modelBuilder.Entity<Moneda>(entity =>
             {
@@ -95,6 +116,25 @@ namespace Domain.Models
                     .HasForeignKey(d => d.MonedaOrigen)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TIPOCAMBIOMONEDA_MONEDA_MonedaOrigen");
+            });
+
+            modelBuilder.Entity<TipoCambioPreferencial>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("TipoCambioPreferencial", "GENERALES");
+
+                entity.Property(e => e.MonedaDestino)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MonedaOrigen)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoCambio).HasColumnType("decimal(18, 3)");
             });
 
             modelBuilder.Entity<Usuario>(entity =>

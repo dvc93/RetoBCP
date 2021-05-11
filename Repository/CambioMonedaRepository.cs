@@ -71,5 +71,17 @@ namespace Repository
             return await Task.Run(() => result );
 
         }
+
+        public async Task<bool> VerficarClientePreferencial(int idCliente)
+        {
+            var isPref = _context.Clientes.First(x => x.IdCliente == idCliente).ClientePreferencial.Value ;
+             return await Task.Run(() => isPref); 
+        }
+
+        public async Task<decimal> ObtenerTipoCambioPreferencial(string monedaOrigen, string monedaDestino)
+        {
+            var  tipoCambioPref = _context.TipoCambioPreferencials.ToList().First(x => x.MonedaDestino == monedaDestino && x.MonedaOrigen == monedaOrigen).TipoCambio;
+            return await Task.Run(() => tipoCambioPref);
+        }
     }
 }

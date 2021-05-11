@@ -47,10 +47,10 @@ namespace ApiCambioMoneda.Controllers
 
         [HttpGet, MapToApiVersion("1.0")]
         [SwaggerResponse(200, "With information", typeof(Response))]
-        public async Task<Response> RealizarCambioMoneda([FromQuery, BindRequired] decimal monto , [FromQuery, BindRequired] string monedaOrigen , [FromQuery, BindRequired]  string  monedaDestino)
+        public async Task<Response> RealizarCambioMoneda([FromQuery, BindRequired] decimal monto , [FromQuery, BindRequired] string monedaOrigen , [FromQuery, BindRequired]  string  monedaDestino , [FromQuery, BindRequired] int IdCliente)
         {
 
-            var data = await _cambioMonedaService.RealizarCambioMoneda(monto,monedaOrigen, monedaDestino);
+            var data = await _cambioMonedaService.RealizarCambioMoneda(monto,monedaOrigen, monedaDestino, IdCliente);
             string message = data.TipoCambio == -1 ? Constantes.NOT_FOUND_TYPE_CHANGE : String.Empty;
             message = monedaOrigen.ToUpper() == monedaDestino.ToUpper() ? Constantes.SAME_MONEY :message;
             return new Response

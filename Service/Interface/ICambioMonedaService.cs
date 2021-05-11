@@ -9,7 +9,7 @@ namespace Service.Interface
     {
 
         Task<string> GuardarTipoCambio(RequestMoneda request);
-        Task<ResponseTipoCambio> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino);
+        Task<ResponseTipoCambio> RealizarCambioMoneda(decimal monto, string monedaOrigen, string monedaDestino , int idCliente);
         Task<IEnumerable <ResponseMoneda>> ListaMonedas();
 
 
